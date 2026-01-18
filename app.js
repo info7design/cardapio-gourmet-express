@@ -80,11 +80,11 @@ const DEFAULT_PRODUCTS = [
 
 // Default hours (Segunda a Domingo)
 const DEFAULT_HOURS = [
-    { day: 'Segunda-feira', open: '18:00', close: '23:00', closed: false },
-    { day: 'Terça-feira', open: '18:00', close: '23:00', closed: false },
-    { day: 'Quarta-feira', open: '18:00', close: '23:00', closed: false },
-    { day: 'Quinta-feira', open: '18:00', close: '23:00', closed: false },
-    { day: 'Sexta-feira', open: '18:00', close: '00:00', closed: false },
+    { day: 'Segunda', open: '18:00', close: '23:00', closed: false },
+    { day: 'Terça', open: '18:00', close: '23:00', closed: false },
+    { day: 'Quarta', open: '18:00', close: '23:00', closed: false },
+    { day: 'Quinta', open: '18:00', close: '23:00', closed: false },
+    { day: 'Sexta', open: '18:00', close: '00:00', closed: false },
     { day: 'Sábado', open: '12:00', close: '00:00', closed: false },
     { day: 'Domingo', open: '12:00', close: '23:00', closed: false },
 ];
