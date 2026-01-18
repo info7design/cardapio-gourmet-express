@@ -25,7 +25,7 @@ function loadFromLocalStorage(key) {
 // ================================================
 
 const APP_ID = 'cardapio-gourmet-express';
-const WHATSAPP_NUMBER = '5511999999999'; // Altere para o número desejado
+const WHATSAPP_NUMBER = '5511972746345'; // Altere para o número desejado
 
 const CATEGORIES = [
     { id: 'burgers', name: 'Burgers Artesanais', icon: '🍔' },
@@ -787,6 +787,87 @@ function saveHours() {
 // PRODUCT MANAGEMENT
 // ================================================
 
+// Placeholders dinâmicos baseados na categoria
+const CATEGORY_PLACEHOLDERS = {
+    burgers: {
+        name: 'Ex: Double Bacon Cheese',
+        description: 'Ex: Dois blends de 160g, muito bacon crocante e cheddar cremoso.',
+        price: '42.00'
+    },
+    sides: {
+        name: 'Ex: Batata Rústica',
+        description: 'Ex: Porção individual de batatas fritas com alecrim e páprica.',
+        price: '18.00'
+    },
+    drinks: {
+        name: 'Ex: Soda Italiana Maçã Verde',
+        description: 'Ex: Refrescante soda artesanal de maçã verde com gelo.',
+        price: '14.00'
+    },
+    desserts: {
+        name: 'Ex: Brownie com Sorvete',
+        description: 'Ex: Brownie de chocolate belga morno com sorvete de baunilha.',
+        price: '22.00'
+    }
+};
+
+function updatePlaceholders() {
+    const category = document.getElementById('productCategory').value;
+    const placeholders = CATEGORY_PLACEHOLDERS[category];
+    
+    if (placeholders) {
+        document.getElementById('productName').placeholder = placeholders.name;
+        document.getElementById('productDescription').placeholder = placeholders.description;
+        document.getElementById('productPrice').placeholder = placeholders.price;
+    }
+}
+
+function handleImageUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // Validar tipo de arquivo
+    if (!file.type.startsWith('image/')) {
+        alert('Por favor, selecione apenas arquivos de imagem.');
+        return;
+    }
+
+    // Validar tamanho (máximo 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+        alert('A imagem deve ter no máximo 5MB.');
+        return;
+    }
+
+    // Converter para base64
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const imageData = e.target.result;
+        document.getElementById('productImage').value = imageData;
+        showImagePreview(imageData);
+    };
+    reader.readAsDataURL(file);
+}
+
+function handleImageUrl(event) {
+    const url = event.target.value.trim();
+    if (url) {
+        document.getElementById('productImage').value = url;
+        showImagePreview(url);
+    }
+}
+
+function showImagePreview(imageSrc) {
+    const previewContainer = document.getElementById('imagePreview');
+    const previewImg = document.getElementById('previewImg');
+    
+    if (imageSrc) {
+        previewImg.src = imageSrc;
+        previewContainer.style.display = 'block';
+    } else {
+        previewContainer.style.display = 'none';
+    }
+}
+
 function handleProductSubmit(event) {
     event.preventDefault();
 
@@ -825,6 +906,10 @@ function handleProductSubmit(event) {
 function resetProductForm() {
     document.getElementById('productForm').reset();
     document.getElementById('productId').value = '';
+    document.getElementById('productImage').value = '';
+    document.getElementById('productImageUrl').value = '';
+    document.getElementById('imagePreview').style.display = 'none';
+    updatePlaceholders(); // Restaurar placeholders padrão
 }
 
 function editProduct(productId) {
@@ -837,6 +922,18 @@ function editProduct(productId) {
     document.getElementById('productDescription').value = product.description;
     document.getElementById('productPrice').value = product.price;
     document.getElementById('productImage').value = product.image;
+    
+    // Atualizar campo de URL ou mostrar preview da imagem
+    if (product.image.startsWith('data:')) {
+        // É uma imagem em base64
+        document.getElementById('productImageUrl').value = '';
+    } else {
+        // É uma URL
+        document.getElementById('productImageUrl').value = product.image;
+    }
+    
+    showImagePreview(product.image);
+    updatePlaceholders();
 
     // Scroll to form
     document.getElementById('productForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1009,3 +1106,6 @@ window.deleteProduct = deleteProduct;
 window.resetProductForm = resetProductForm;
 window.saveHours = saveHours;
 window.toggleDayClosed = toggleDayClosed;
+window.updatePlaceholders = updatePlaceholders;
+window.handleImageUpload = handleImageUpload;
+window.handleImageUrl = handleImageUrl;

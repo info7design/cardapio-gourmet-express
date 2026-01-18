@@ -286,7 +286,7 @@
                                     
                                     <div class="form-group">
                                         <label class="form-label">Categoria</label>
-                                        <select id="productCategory" class="form-input" required>
+                                        <select id="productCategory" class="form-input" onchange="updatePlaceholders()" required>
                                             <option value="burgers">🍔 Burgers Artesanais</option>
                                             <option value="sides">🍟 Acompanhamentos</option>
                                             <option value="drinks">🥤 Bebidas</option>
@@ -310,10 +310,25 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label class="form-label">URL da Imagem</label>
-                                        <input type="url" id="productImage" class="form-input" placeholder="https://exemplo.com/imagem.jpg" required>
+                                        <label class="form-label">Imagem do Produto</label>
+                                        <input type="hidden" id="productImage" required>
+                                        <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
+                                            <label for="productImageFile" class="btn-secondary" style="cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; margin: 0;">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                                                    <polyline points="21 15 16 10 5 21"/>
+                                                </svg>
+                                                Escolher Imagem
+                                            </label>
+                                            <input type="file" id="productImageFile" accept="image/*" onchange="handleImageUpload(event)" style="display: none;">
+                                            <input type="url" id="productImageUrl" class="form-input" placeholder="Ou cole uma URL" style="flex: 1;" onchange="handleImageUrl(event)">
+                                        </div>
+                                        <div id="imagePreview" style="margin-top: 0.75rem; display: none;">
+                                            <img id="previewImg" src="" alt="Preview" style="max-width: 200px; max-height: 200px; border-radius: 8px; border: 2px solid var(--color-gray-200);">
+                                        </div>
                                         <small style="color: var(--color-gray-500); font-size: 0.75rem; margin-top: 0.25rem; display: block;">
-                                            Dica: Use serviços como Unsplash ou Imgur
+                                            Você pode fazer upload de uma imagem ou colar uma URL
                                         </small>
                                     </div>
 
