@@ -1753,6 +1753,198 @@ textarea.form-input {
 }
 
 /* ================================================
+   CONFIG TABS
+   ================================================ */
+
+.config-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    background-color: white;
+    padding: 0.5rem;
+    border-radius: 1rem;
+    border: 1px solid var(--color-gray-200);
+    box-shadow: var(--shadow-sm);
+}
+
+.config-tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.5rem;
+    background-color: transparent;
+    border: none;
+    border-radius: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-gray-600);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.config-tab:hover {
+    background-color: var(--color-gray-50);
+    color: var(--color-gray-900);
+}
+
+.config-tab.active {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.config-tab.active svg {
+    color: white;
+}
+
+.config-tab svg {
+    width: 20px;
+    height: 20px;
+    color: var(--color-gray-400);
+    transition: color 0.2s ease;
+}
+
+.config-tab-content {
+    display: none;
+}
+
+.config-tab-content.active {
+    display: block;
+}
+
+/* ================================================
+   BUSINESS INFO SECTION
+   ================================================ */
+
+.business-info-section {
+    padding: 3rem 0;
+    background-color: var(--color-gray-50);
+    border-top: 1px solid var(--color-gray-200);
+}
+
+.business-info-card {
+    background-color: white;
+    border-radius: 1.5rem;
+    border: 1px solid var(--color-gray-200);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+}
+
+.info-section {
+    padding: 2rem;
+}
+
+.info-section:not(:last-child) {
+    border-bottom: 1px solid var(--color-gray-100);
+}
+
+.info-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--color-gray-800);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.info-title svg {
+    color: var(--color-primary);
+}
+
+.info-hours-list {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.info-hours-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: var(--color-gray-50);
+    border-radius: 0.75rem;
+    transition: all 0.2s ease;
+}
+
+.info-hours-item:hover {
+    background-color: var(--color-gray-100);
+}
+
+.info-hours-item.today {
+    background-color: var(--color-primary-light);
+    border: 2px solid var(--color-primary);
+    font-weight: 600;
+}
+
+.info-hours-day {
+    font-weight: 600;
+    color: var(--color-gray-700);
+}
+
+.info-hours-item.today .info-hours-day {
+    color: var(--color-primary-dark);
+}
+
+.info-hours-time {
+    color: var(--color-gray-600);
+    font-weight: 500;
+}
+
+.info-hours-time.closed {
+    color: var(--color-red);
+    font-weight: 600;
+}
+
+.info-hours-item.today .info-hours-time {
+    color: var(--color-primary-dark);
+}
+
+.info-whatsapp-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-md);
+}
+
+.info-whatsapp-link:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.info-whatsapp-link svg {
+    width: 24px;
+    height: 24px;
+}
+
+@media (max-width: 768px) {
+    .config-tabs {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .config-tab {
+        width: 100%;
+    }
+
+    .info-section {
+        padding: 1.5rem;
+    }
+
+    .business-info-section {
+        padding: 2rem 0;
+    }
+}
+
+/* ================================================
    PRINT STYLES
    ================================================ */
 

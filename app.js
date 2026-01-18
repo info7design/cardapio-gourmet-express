@@ -784,7 +784,41 @@ function saveHours() {
     });
 
     saveToLocalStorage('hours', hours);
+    renderBusinessInfo(); // Atualizar no cardápio também
     alert('Horários salvos com sucesso!');
+}
+
+// ================================================
+// CONFIG TAB SWITCHING
+// ================================================
+
+function switchConfigTab(tabName) {
+    // Atualizar botões das abas
+    const tabs = document.querySelectorAll('.config-tab');
+    tabs.forEach(tab => {
+        if (tab.dataset.tab === tabName) {
+            tab.classList.add('active');
+        } else {
+            tab.classList.remove('active');
+        }
+    });
+
+    // Atualizar conteúdo das abas
+    const tabContents = document.querySelectorAll('.config-tab-content');
+    tabContents.forEach(content => {
+        content.classList.remove('active');
+    });
+
+    // Mostrar aba selecionada
+    const selectedTab = document.getElementById(`${tabName}Tab`);
+    if (selectedTab) {
+        selectedTab.classList.add('active');
+    }
+
+    // Se for a aba de horários, renderizar
+    if (tabName === 'hours') {
+        renderHoursConfig();
+    }
 }
 
 // ================================================
@@ -1063,6 +1097,9 @@ function initializeApp() {
     // Render initial products
     renderProducts();
 
+    // Render business info in menu
+    renderBusinessInfo();
+
     // Setup category buttons
     const categoryButtons = document.querySelectorAll('.category-btn');
     categoryButtons.forEach(btn => {
@@ -1113,3 +1150,4 @@ window.toggleDayClosed = toggleDayClosed;
 window.updatePlaceholders = updatePlaceholders;
 window.handleImageUpload = handleImageUpload;
 window.handleImageUrl = handleImageUrl;
+window.switchConfigTab = switchConfigTab;
