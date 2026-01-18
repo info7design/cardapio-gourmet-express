@@ -27,12 +27,15 @@ function loadFromLocalStorage(key) {
 const APP_ID = 'cardapio-gourmet-express';
 const WHATSAPP_NUMBER = '5511972746345'; // Altere para o número desejado
 
-const CATEGORIES = [
+const DEFAULT_CATEGORIES = [
     { id: 'burgers', name: 'Burgers Artesanais', icon: '🍔' },
     { id: 'sides', name: 'Acompanhamentos', icon: '🍟' },
     { id: 'drinks', name: 'Bebidas', icon: '🥤' },
     { id: 'desserts', name: 'Sobremesas', icon: '🍰' },
 ];
+
+// Load categories from localStorage or use defaults
+let CATEGORIES = loadFromLocalStorage('categories') || [...DEFAULT_CATEGORIES];
 
 // Default products
 const DEFAULT_PRODUCTS = [
@@ -794,7 +797,8 @@ function shareMenu() {
 // ================================================
 
 function renderConfigView() {
-    renderProductsList();
+    renderCategoriesList();
+    updateProductCategorySelect();
 }
 
 // ================================================
@@ -893,9 +897,14 @@ function switchConfigTab(tabName) {
         selectedTab.classList.add('active');
     }
 
-    // Se for a aba de horários, renderizar
+    // Renderizar conteúdo conforme necessário
     if (tabName === 'hours') {
         renderHoursConfig();
+    } else if (tabName === 'categories') {
+        renderCategoriesList();
+    } else if (tabName === 'products') {
+        renderProductsList();
+        updateProductCategorySelect();
     }
 }
 
@@ -1155,6 +1164,171 @@ function renderProductsList() {
             </div>
         </div>
     `).join('');
+}
+
+// ================================================
+// CATEGORIES MANAGEMENT
+// ================================================
+
+function handleCategorySubmit(event) {
+    event.preventDefault();
+
+    const id = document.getElementById('categoryId').value;
+    const name = document.getElementById('categoryName').value.trim();
+    const icon = document.getElementById('categoryIcon').value.trim() || '📦';
+
+    if (!name) {
+        alert('Por favor, preencha o nome da categoria.');
+        return;
+    }
+
+    // Generate ID from name
+    const generatedId = name.toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]/g, '_');
+
+    if (id) {
+        // Edit existing category
+        const index = CATEGORIES.findIndex(c => c.id === id);
+        if (index !== -1) {
+            CATEGORIES[index] = { id, name, icon };
+        }
+    } else {
+        // Check if ID already exists
+        if (CATEGORIES.find(c => c.id === generatedId)) {
+            alert('Já existe uma categoria com esse nome.');
+            return;
+        }
+        // Add new category
+        CATEGORIES.push({ id: generatedId, name, icon });
+    }
+
+    saveToLocalStorage('categories', CATEGORIES);
+    resetCategoryForm();
+    renderCategoriesList();
+    updateProductCategorySelect();
+    renderProducts(); // Update menu view
+    
+    alert(id ? 'Categoria atualizada com sucesso!' : 'Categoria adicionada com sucesso!');
+}
+
+function resetCategoryForm() {
+    document.getElementById('categoryForm').reset();
+    document.getElementById('categoryId').value = '';
+    document.getElementById('categorySubmitBtn').innerHTML = `
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Adicionar Categoria
+    `;
+    document.getElementById('cancelCategoryBtn').style.display = 'none';
+}
+
+function editCategory(categoryId) {
+    const category = CATEGORIES.find(c => c.id === categoryId);
+    if (!category) return;
+
+    document.getElementById('categoryId').value = category.id;
+    document.getElementById('categoryName').value = category.name;
+    document.getElementById('categoryIcon').value = category.icon;
+    
+    document.getElementById('categorySubmitBtn').innerHTML = `
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+        </svg>
+        Atualizar Categoria
+    `;
+    document.getElementById('cancelCategoryBtn').style.display = 'inline-flex';
+
+    // Scroll to form
+    document.getElementById('categoryForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function cancelCategoryEdit() {
+    resetCategoryForm();
+}
+
+function deleteCategory(categoryId) {
+    // Check if category is being used
+    const productsUsingCategory = PRODUCTS.filter(p => p.category === categoryId);
+    if (productsUsingCategory.length > 0) {
+        alert(`Não é possível excluir esta categoria pois ${productsUsingCategory.length} produto(s) estão usando ela.`);
+        return;
+    }
+
+    if (!confirm('Tem certeza que deseja excluir esta categoria?')) {
+        return;
+    }
+
+    const index = CATEGORIES.findIndex(c => c.id === categoryId);
+    if (index !== -1) {
+        CATEGORIES.splice(index, 1);
+        saveToLocalStorage('categories', CATEGORIES);
+        renderCategoriesList();
+        updateProductCategorySelect();
+        renderProducts();
+        alert('Categoria excluída com sucesso!');
+    }
+}
+
+function renderCategoriesList() {
+    const categoriesList = document.getElementById('categoriesList');
+    if (!categoriesList) return;
+
+    if (CATEGORIES.length === 0) {
+        categoriesList.innerHTML = `
+            <div class="empty-state">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7"/>
+                    <rect x="14" y="3" width="7" height="7"/>
+                    <rect x="14" y="14" width="7" height="7"/>
+                    <rect x="3" y="14" width="7" height="7"/>
+                </svg>
+                <p>Nenhuma categoria cadastrada ainda.</p>
+            </div>
+        `;
+        return;
+    }
+
+    categoriesList.innerHTML = CATEGORIES.map(category => {
+        const productsCount = PRODUCTS.filter(p => p.category === category.id).length;
+        return `
+        <div class="product-item">
+            <div class="product-item-image">
+                <span style="font-size: 2rem;">${category.icon}</span>
+            </div>
+            <div class="product-item-info">
+                <h3>${category.name}</h3>
+                <p class="product-item-description">${productsCount} produto(s)</p>
+            </div>
+            <div class="product-item-actions">
+                <button class="btn-icon" onclick="editCategory('${category.id}')" title="Editar">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                </button>
+                <button class="btn-icon delete" onclick="deleteCategory('${category.id}')" title="Excluir">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    `}).join('');
+}
+
+function updateProductCategorySelect() {
+    const categorySelect = document.getElementById('productCategory');
+    if (!categorySelect) return;
+
+    categorySelect.innerHTML = CATEGORIES.map(cat => 
+        `<option value="${cat.id}">${cat.icon} ${cat.name}</option>`
+    ).join('');
 }
 
 // ================================================

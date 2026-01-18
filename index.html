@@ -315,26 +315,98 @@
             <div class="container-wide">
                 <!-- Config Tabs -->
                 <div class="config-tabs">
-                    <button class="config-tab active" data-tab="products" onclick="switchConfigTab('products')">
+                    <button class="config-tab active" data-tab="categories" onclick="switchConfigTab('categories')">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7"/>
+                            <rect x="14" y="3" width="7" height="7"/>
+                            <rect x="14" y="14" width="7" height="7"/>
+                            <rect x="3" y="14" width="7" height="7"/>
+                        </svg>
+                        Categorias
+                    </button>
+                    <button class="config-tab" data-tab="products" onclick="switchConfigTab('products')">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="12" cy="12" r="10"/>
                             <line x1="12" y1="8" x2="12" y2="16"/>
                             <line x1="8" y1="12" x2="16" y2="12"/>
                         </svg>
-                        Gerenciar Produtos
+                        Produtos
                     </button>
                     <button class="config-tab" data-tab="hours" onclick="switchConfigTab('hours')">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="12" cy="12" r="10"/>
                             <polyline points="12 6 12 12 16 14"/>
                         </svg>
-                        Horário de Funcionamento
+                        Horários
                     </button>
                 </div>
 
                 <div class="config-content">
+                    <!-- Categories Tab -->
+                    <section class="config-section config-tab-content active" id="categoriesTab">
+                        <div class="config-card">
+                            <div class="config-header">
+                                <h2 class="config-title">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="12" y1="5" x2="12" y2="19"/>
+                                        <line x1="5" y1="12" x2="19" y2="12"/>
+                                    </svg>
+                                    Adicionar Nova Categoria
+                                </h2>
+                            </div>
+                            <div class="config-body">
+                                <form id="categoryForm" class="product-form" onsubmit="handleCategorySubmit(event)">
+                                    <input type="hidden" id="categoryId">
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Nome da Categoria</label>
+                                        <input type="text" id="categoryName" class="form-input" placeholder="Ex: Lanches, Pizzas, Bebidas..." required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label">Emoji (opcional)</label>
+                                        <input type="text" id="categoryIcon" class="form-input" placeholder="Ex: 🍕 🍔 🥤" maxlength="2">
+                                        <small style="color: var(--color-gray-500); font-size: 0.75rem; margin-top: 0.25rem; display: block;">
+                                            Cole um emoji ou deixe em branco
+                                        </small>
+                                    </div>
+
+                                    <div class="form-actions">
+                                        <button type="submit" class="btn-primary" id="categorySubmitBtn">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <line x1="12" y1="5" x2="12" y2="19"/>
+                                                <line x1="5" y1="12" x2="19" y2="12"/>
+                                            </svg>
+                                            Adicionar Categoria
+                                        </button>
+                                        <button type="button" class="btn-secondary" onclick="cancelCategoryEdit()" style="display: none;" id="cancelCategoryBtn">
+                                            Cancelar
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="config-card">
+                            <div class="config-header">
+                                <h2 class="config-title">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="3" width="7" height="7"/>
+                                        <rect x="14" y="3" width="7" height="7"/>
+                                        <rect x="14" y="14" width="7" height="7"/>
+                                        <rect x="3" y="14" width="7" height="7"/>
+                                    </svg>
+                                    Categorias Cadastradas
+                                </h2>
+                            </div>
+                            <div class="config-body">
+                                <div id="categoriesList" class="products-list"></div>
+                            </div>
+                        </div>
+                    </section>
+
                     <!-- Products Tab -->
-                    <section class="config-section config-tab-content active" id="productsTab">
+                    <section class="config-section config-tab-content" id="productsTab">
                         <div class="config-card">
                             <div class="config-header">
                                 <h2 class="config-title">
