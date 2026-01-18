@@ -621,11 +621,9 @@ function renderOrderCard(order, showActions) {
         <div class="order-card" data-order-id="${order.id}">
             <div class="order-header">
                 <div class="order-header-left">
-                    <div>
-                        <p class="order-id">Pedido #${order.id.slice(-6)}</p>
-                        <h4 class="order-customer">${order.customerName}</h4>
-                        <p class="order-date">${orderDate}</p>
-                    </div>
+                    <p class="order-id">Pedido #${order.id.slice(-6)}</p>
+                    <h4 class="order-customer">${order.customerName}</h4>
+                    <p class="order-date">${orderDate}</p>
                 </div>
                 <span class="status-badge ${getStatusClass(order.status)}">
                     ${getStatusLabel(order.status)}
