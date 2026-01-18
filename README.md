@@ -1,416 +1,99 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Gourmet Express - Os melhores burgers artesanais da cidade">
-    <title>Gourmet Express - Cardápio Online</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-</head>
-<body>
-    <!-- MENU VIEW -->
-    <div id="menuView" class="view active">
-        <!-- Header -->
-        <header class="header">
-            <div class="container">
-                <div class="header-content">
-                    <div class="logo">
-                        <div class="logo-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M3 2l2.01 18.23L12 22l6.99-1.77L21 2H3zm14 6l-.5 5.5-.5 5.5-5 1.25L6 18.5 5.5 13 5 7.5h14z"/>
-                            </svg>
-                        </div>
-                        <h1 class="logo-text">Gourmet Express</h1>
-                    </div>
-                </div>
-            </div>
-        </header>
+🍔 Gourmet Express - Cardápio Digital
+Sistema completo de cardápio online com gestão de pedidos e notificações via WhatsApp.
 
-        <!-- Hero Section -->
-        <section class="hero">
-            <div class="container">
-                <div class="hero-content">
-                    <div class="hero-text">
-                        <h2 class="hero-title">Fome de quê?</h2>
-                        <p class="hero-subtitle">Peça os melhores sabores da cidade agora mesmo.</p>
-                    </div>
-                    <div class="hero-icon">
-                        <svg width="120" height="120" viewBox="0 0 24 24" fill="currentColor" opacity="0.2">
-                            <path d="M3 2l2.01 18.23L12 22l6.99-1.77L21 2H3zm14 6l-.5 5.5-.5 5.5-5 1.25L6 18.5 5.5 13 5 7.5h14z"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        </section>
+📋 Funcionalidades
+Para Clientes
+✅ Navegação por categorias (Burgers, Acompanhamentos, Bebidas, Sobremesas)
+✅ Carrinho de compras com controle de quantidade
+✅ Envio de pedidos via WhatsApp
+✅ Interface responsiva e moderna
+✅ Recebimento de notificações de status do pedido
+Para Administradores
+✅ Painel de controle de pedidos em tempo real
+✅ Gestão de status (Pendente → Preparando → Pronto → Entregue)
+✅ Notificações automáticas para clientes via WhatsApp
+✅ Gerenciamento de produtos (adicionar, editar, duplicar, excluir)
+✅ Configuração de horários de funcionamento
+✅ Compartilhamento do cardápio
+✅ Estatísticas de pedidos
+🚀 Tecnologias
+HTML5 - Estrutura semântica
+CSS3 - Design responsivo e moderno
+JavaScript Vanilla - Lógica da aplicação
+LocalStorage - Persistência de dados
+WhatsApp Web API - Integração para pedidos e notificações
+📦 Instalação
+Clone o repositório:
+git clone https://github.com/seu-usuario/cardapio-gourmet-express.git
+Abra o arquivo index.html no navegador ou use um servidor local:
+# Exemplo com Python
+python -m http.server 8000
 
-        <!-- Categories Navigation -->
-        <nav class="categories" id="categoriesNav">
-            <div class="container">
-                <div class="categories-list">
-                    <button class="category-btn active" data-category="burgers">
-                        <span class="category-icon">🍔</span>
-                        <span class="category-name">Burgers Artesanais</span>
-                    </button>
-                    <button class="category-btn" data-category="sides">
-                        <span class="category-icon">🍟</span>
-                        <span class="category-name">Acompanhamentos</span>
-                    </button>
-                    <button class="category-btn" data-category="drinks">
-                        <span class="category-icon">🥤</span>
-                        <span class="category-name">Bebidas</span>
-                    </button>
-                    <button class="category-btn" data-category="desserts">
-                        <span class="category-icon">🍰</span>
-                        <span class="category-name">Sobremesas</span>
-                    </button>
-                </div>
-            </div>
-        </nav>
+# Exemplo com Node.js (http-server)
+npx http-server
+Acesse http://localhost:8000
+⚙️ Configuração
+Número do WhatsApp
+Edite o arquivo app.js e altere a constante WHATSAPP_NUMBER:
 
-        <!-- Products Grid -->
-        <main class="products">
-            <div class="container">
-                <div class="products-grid" id="productsGrid">
-                    <!-- Products will be inserted here by JavaScript -->
-                </div>
-            </div>
-        </main>
+const WHATSAPP_NUMBER = '5511999999999'; // Seu número com DDI + DDD
+Produtos Padrão
+Os produtos de exemplo estão definidos em app.js no array DEFAULT_PRODUCTS. Você pode editá-los ou adicionar novos pelo painel administrativo.
 
-        <!-- Floating Cart Button -->
-        <div class="floating-cart hidden" id="floatingCart">
-            <button class="cart-button" onclick="openCart()">
-                <div class="cart-icon-wrapper">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
-                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-                    </svg>
-                    <span class="cart-badge" id="cartBadge">0</span>
-                </div>
-                <div class="cart-info">
-                    <p class="cart-label">Ver Carrinho</p>
-                    <p class="cart-total" id="cartTotal">R$ 0,00</p>
-                </div>
-                <svg class="cart-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="9 18 15 12 9 6"/>
-                </svg>
-            </button>
-        </div>
+Horários de Funcionamento
+Configure os horários no painel administrativo ou edite DEFAULT_HOURS em app.js.
 
-        <!-- Admin Access -->
-        <footer class="admin-access">
-            <button class="admin-access-link" onclick="switchView('admin')">Acesso Administrativo</button>
-        </footer>
-    </div>
+📱 Como Usar
+Acesso do Cliente
+Abra o cardápio no navegador
+Navegue pelas categorias
+Adicione produtos ao carrinho
+Preencha nome, telefone e endereço
+Envie o pedido via WhatsApp
+Acesso Administrativo
+Clique em "Acesso Administrativo" no rodapé
+Visualize pedidos em tempo real
+Atualize status dos pedidos (notificação automática para o cliente)
+Gerencie produtos e horários na página de Configurações
+📂 Estrutura do Projeto
+cardapio-gourmet-express/
+├── index.html          # Estrutura HTML
+├── styles.css          # Estilos e responsividade
+├── app.js             # Lógica da aplicação
+├── README.md          # Documentação
+└── .gitignore         # Arquivos ignorados pelo Git
+🎨 Personalização
+Cores
+As cores principais estão definidas como variáveis CSS no início do styles.css:
 
-    <!-- ADMIN VIEW -->
-    <div id="adminView" class="view">
-        <!-- Admin Header -->
-        <header class="admin-header">
-            <div class="container-wide">
-                <div class="admin-header-content">
-                    <div class="admin-logo">
-                        <div class="admin-logo-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-                                <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
-                            </svg>
-                        </div>
-                        <div>
-                            <h1 class="admin-title">Painel de Pedidos</h1>
-                            <p class="admin-subtitle">Monitoramento em tempo real</p>
-                        </div>
-                    </div>
-                    <div style="display: flex; gap: 0.5rem;">
-                        <button class="btn-menu btn-share" onclick="shareMenu()" title="Compartilhar Cardápio">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="18" cy="5" r="3"/>
-                                <circle cx="6" cy="12" r="3"/>
-                                <circle cx="18" cy="19" r="3"/>
-                                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
-                                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
-                            </svg>
-                            Compartilhar
-                        </button>
-                        <button class="btn-menu" onclick="switchView('menu')">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
-                                <line x1="12" y1="18" x2="12" y2="18"/>
-                            </svg>
-                            Cardápio
-                        </button>
-                        <button class="btn-menu" onclick="switchView('config')">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="3"/>
-                                <path d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m4.24 4.24l4.24 4.24M1 12h6m6 0h6M5.64 18.36l4.24-4.24m4.24-4.24l4.24-4.24"/>
-                            </svg>
-                            Config
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </header>
+--color-primary: #f97316;
+--color-primary-dark: #ea580c;
+--color-primary-light: #fed7aa;
+Logo e Nome
+Edite o título e nome da loja no arquivo index.html:
 
-        <!-- Admin Dashboard -->
-        <main class="admin-main">
-            <div class="container-wide">
-                <div class="admin-grid">
-                    <!-- Stats Sidebar -->
-                    <aside class="admin-sidebar">
-                        <div class="stats-card">
-                            <h3 class="stats-title">Resumo de Hoje</h3>
-                            <div class="stats-grid">
-                                <div class="stat-box stat-orange">
-                                    <p class="stat-number" id="totalOrders">0</p>
-                                    <p class="stat-label">Total Pedidos</p>
-                                </div>
-                                <div class="stat-box stat-green">
-                                    <p class="stat-number" id="deliveredOrders">0</p>
-                                    <p class="stat-label">Entregues</p>
-                                </div>
-                            </div>
-                        </div>
+<h1 class="logo-text">Gourmet Express</h1>
+🔒 Segurança
+Este sistema usa LocalStorage para armazenar dados. Para ambientes de produção, considere:
 
-                        <div class="queue-card">
-                            <h3 class="queue-title">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-                                </svg>
-                                Próximos na Fila
-                            </h3>
-                            <div class="queue-list" id="queueList">
-                                <div class="empty-queue">Nenhum pedido pendente</div>
-                            </div>
-                        </div>
-                    </aside>
+Implementar autenticação para o painel administrativo
+Usar backend para persistência de dados
+Adicionar validação de dados no servidor
+Implementar HTTPS
+🤝 Contribuindo
+Contribuições são bem-vindas! Sinta-se à vontade para abrir issues ou pull requests.
 
-                    <!-- Orders Feed -->
-                    <div class="orders-section">
-                        <h2 class="orders-header">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
-                                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
-                            </svg>
-                            Fila de Produção
-                        </h2>
-                        <div class="orders-list" id="ordersList">
-                            <div class="empty-orders">
-                                <div class="empty-icon">
-                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6z"/>
-                                        <line x1="6" y1="17" x2="18" y2="17"/>
-                                    </svg>
-                                </div>
-                                <p>Nenhum pedido recebido ainda.</p>
-                            </div>
-                        </div>
-                    </div>
+📄 Licença
+Este projeto está sob a licença MIT. Veja o arquivo LICENSE para mais detalhes.
 
-                    <!-- Hours Configuration -->
-                    <div class="orders-section" style="margin-top: 2rem;">
-                        <h2 class="orders-header">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="10"/>
-                                <polyline points="12 6 12 12 16 14"/>
-                            </svg>
-                            Horário de Funcionamento
-                        </h2>
-                        <div class="config-card">
-                            <div class="config-body">
-                                <div class="hours-grid" id="hoursGrid">
-                                    <!-- Hours will be inserted here -->
-                                </div>
-                                <button class="btn-primary" onclick="saveHours()" style="margin-top: 1rem;">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
-                                        <polyline points="17 21 17 13 7 13 7 21"/>
-                                        <polyline points="7 3 7 8 15 8"/>
-                                    </svg>
-                                    Salvar Horários
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
-    </div>
+🌟 Recursos Futuros
+ Integração com sistema de pagamento
+ Rastreamento de entrega em tempo real
+ Cupons de desconto
+ Sistema de avaliações
+ Painel de relatórios e estatísticas
+ App mobile nativo
+📞 Suporte
+Para dúvidas ou suporte, entre em contato através das issues do GitHub.
 
-    <!-- CONFIG VIEW -->
-    <div id="configView" class="view">
-        <header class="admin-header">
-            <div class="container-wide">
-                <div class="admin-header-content">
-                    <div class="admin-logo">
-                        <div class="admin-logo-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="3"/>
-                                <path d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m4.24 4.24l4.24 4.24M1 12h6m6 0h6M5.64 18.36l4.24-4.24m4.24-4.24l4.24-4.24"/>
-                            </svg>
-                        </div>
-                        <div>
-                            <h1 class="admin-title">Configurações</h1>
-                            <p class="admin-subtitle">Gerencie produtos e informações</p>
-                        </div>
-                    </div>
-                    <button class="btn-menu" onclick="switchView('admin')">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="15 18 9 12 15 6"/>
-                        </svg>
-                        Voltar
-                    </button>
-                </div>
-            </div>
-        </header>
-
-        <main class="config-main">
-            <div class="container-wide">
-                <div class="config-content">
-                    <!-- Products Management -->
-                    <section class="config-section">
-                        <div class="config-card">
-                            <div class="config-header">
-                                <h2 class="config-title">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <line x1="12" y1="5" x2="12" y2="19"/>
-                                        <line x1="5" y1="12" x2="19" y2="12"/>
-                                    </svg>
-                                    Adicionar Novo Produto
-                                </h2>
-                            </div>
-                            <div class="config-body">
-                                <form id="productForm" class="product-form" onsubmit="handleProductSubmit(event)">
-                                    <input type="hidden" id="productId">
-                                    
-                                    <div class="form-group">
-                                        <label class="form-label">Categoria</label>
-                                        <select id="productCategory" class="form-input" onchange="updatePlaceholders()" required>
-                                            <option value="burgers">🍔 Burgers Artesanais</option>
-                                            <option value="sides">🍟 Acompanhamentos</option>
-                                            <option value="drinks">🥤 Bebidas</option>
-                                            <option value="desserts">🍰 Sobremesas</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="form-label">Nome do Produto</label>
-                                        <input type="text" id="productName" class="form-input" placeholder="Ex: Double Bacon Cheese" required>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="form-label">Descrição</label>
-                                        <textarea id="productDescription" class="form-input" rows="3" placeholder="Descreva o produto..." required></textarea>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="form-label">Preço (R$)</label>
-                                        <input type="number" id="productPrice" class="form-input" step="0.01" min="0" placeholder="0.00" required>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="form-label">Imagem do Produto</label>
-                                        <input type="hidden" id="productImage" required>
-                                        <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
-                                            <label for="productImageFile" class="btn-secondary" style="cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; margin: 0;">
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                                                    <circle cx="8.5" cy="8.5" r="1.5"/>
-                                                    <polyline points="21 15 16 10 5 21"/>
-                                                </svg>
-                                                Escolher Imagem
-                                            </label>
-                                            <input type="file" id="productImageFile" accept="image/*" onchange="handleImageUpload(event)" style="display: none;">
-                                            <input type="url" id="productImageUrl" class="form-input" placeholder="Ou cole uma URL" style="flex: 1;" onchange="handleImageUrl(event)">
-                                        </div>
-                                        <div id="imagePreview" style="margin-top: 0.75rem; display: none;">
-                                            <img id="previewImg" src="" alt="Preview" style="max-width: 200px; max-height: 200px; border-radius: 8px; border: 2px solid var(--color-gray-200);">
-                                        </div>
-                                        <small style="color: var(--color-gray-500); font-size: 0.75rem; margin-top: 0.25rem; display: block;">
-                                            Você pode fazer upload de uma imagem ou colar uma URL
-                                        </small>
-                                    </div>
-
-                                    <div class="form-actions">
-                                        <button type="submit" class="btn-primary">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
-                                                <polyline points="17 21 17 13 7 13 7 21"/>
-                                                <polyline points="7 3 7 8 15 8"/>
-                                            </svg>
-                                            Salvar Produto
-                                        </button>
-                                        <button type="button" class="btn-secondary" onclick="resetProductForm()">
-                                            Cancelar
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-
-                        <!-- Products List -->
-                        <div class="config-card" style="margin-top: 1.5rem;">
-                            <div class="config-header">
-                                <h2 class="config-title">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <line x1="8" y1="6" x2="21" y2="6"/>
-                                        <line x1="8" y1="12" x2="21" y2="12"/>
-                                        <line x1="8" y1="18" x2="21" y2="18"/>
-                                        <line x1="3" y1="6" x2="3.01" y2="6"/>
-                                        <line x1="3" y1="12" x2="3.01" y2="12"/>
-                                        <line x1="3" y1="18" x2="3.01" y2="18"/>
-                                    </svg>
-                                    Produtos Cadastrados
-                                </h2>
-                            </div>
-                            <div class="config-body">
-                                <div id="productsList" class="products-list-config">
-                                    <!-- Products will be listed here -->
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <!-- Cart Modal -->
-    <div class="cart-modal" id="cartModal">
-        <div class="cart-overlay" onclick="closeCart()"></div>
-        <div class="cart-content">
-            <div class="cart-header">
-                <h2 class="cart-title">Seu Carrinho 🛒</h2>
-                <button class="cart-close" onclick="closeCart()">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-                    </svg>
-                </button>
-            </div>
-
-            <div class="cart-items" id="cartItems">
-                <!-- Cart items will be inserted here -->
-            </div>
-
-            <div class="cart-form">
-                <h3 class="form-title">Dados para entrega</h3>
-                <input type="text" id="customerName" class="form-input" placeholder="Seu Nome completo" required>
-                <input type="tel" id="customerPhone" class="form-input" placeholder="WhatsApp (11) 99999-9999" required>
-                <input type="text" id="customerAddress" class="form-input" placeholder="Endereço (Rua, Nº, Bairro)" required>
-            </div>
-
-            <button class="btn-checkout" id="checkoutBtn" onclick="handleCheckout()">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
-                </svg>
-                Enviar Pedido para WhatsApp
-            </button>
-            <p class="checkout-note">Ao clicar, você será redirecionado para o WhatsApp para finalizar.</p>
-        </div>
-    </div>
-
-    <!-- Scripts -->
-    <script src="app.js"></script>
-</body>
-</html>
+Desenvolvido com ❤️ para restaurantes e food services
