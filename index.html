@@ -339,6 +339,13 @@
                         </svg>
                         Horários
                     </button>
+                    <button class="config-tab" data-tab="settings" onclick="switchConfigTab('settings')">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="M12 1v6m0 6v6m5.66-13.66l-4.24 4.24m-2.82 2.82l-4.24 4.24m16.5-5.66l-6 0m-6 0l-6 0m13.66 5.66l-4.24-4.24m-2.82-2.82l-4.24-4.24"/>
+                        </svg>
+                        Configurações
+                    </button>
                 </div>
 
                 <div class="config-content">
@@ -365,9 +372,56 @@
 
                                     <div class="form-group">
                                         <label class="form-label">Emoji (opcional)</label>
-                                        <input type="text" id="categoryIcon" class="form-input" placeholder="Ex: 🍕 🍔 🥤" maxlength="2">
+                                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                            <input type="text" id="categoryIcon" class="form-input" placeholder="Escolha um emoji" maxlength="2" style="flex: 1;">
+                                            <div class="emoji-selector">
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🍕')">🍕</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🍔')">🍔</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🍟')">🍟</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🌭')">🌭</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🥪')">🥪</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🌮')">🌮</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🌯')">🌯</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🥙')">🥙</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🍝')">🍝</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🍜')">🍜</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🍲')">🍲</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🍛')">🍛</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🍱')">🍱</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🥘')">🥘</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🍗')">🍗</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🍖')">🍖</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🥩')">🥩</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🥓')">🥓</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🍤')">🍤</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🍣')">🍣</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🍿')">🍿</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🥤')">🥤</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🥛')">🥛</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('☕')">☕</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🍺')">🍺</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🍷')">🍷</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🍹')">🍹</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🍰')">🍰</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🎂')">🎂</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🍪')">🍪</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🍩')">🍩</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🍦')">🍦</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🧁')">🧁</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🥧')">🥧</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🍮')">🍮</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🍨')">🍨</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🥗')">🥗</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🍇')">🍇</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🍊')">🍊</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🍋')">🍋</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🍌')">🍌</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('🍓')">🍓</button>
+                                                <button type="button" class="emoji-btn" onclick="selectEmoji('📦')">📦</button>
+                                            </div>
+                                        </div>
                                         <small style="color: var(--color-gray-500); font-size: 0.75rem; margin-top: 0.25rem; display: block;">
-                                            Cole um emoji ou deixe em branco
+                                            Selecione um emoji ou digite/cole um personalizado
                                         </small>
                                     </div>
 
@@ -543,6 +597,72 @@
                                     </svg>
                                     Salvar Horários
                                 </button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Settings Tab -->
+                    <section class="config-section config-tab-content" id="settingsTab">
+                        <div class="config-card">
+                            <div class="config-header">
+                                <h2 class="config-title">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                    </svg>
+                                    Notificações ao Cliente
+                                </h2>
+                            </div>
+                            <div class="config-body">
+                                <div class="settings-section">
+                                    <div class="form-group">
+                                        <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; padding: 1rem; background-color: var(--color-gray-50); border-radius: 0.75rem; border: 2px solid var(--color-gray-200); transition: all 0.2s ease;" id="notificationLabel">
+                                            <input type="checkbox" id="enableNotifications" checked onchange="toggleNotifications()" style="width: 1.5rem; height: 1.5rem; cursor: pointer; accent-color: var(--color-primary);">
+                                            <div style="flex: 1;">
+                                                <span class="form-label" style="margin: 0; font-size: 1rem; display: block; margin-bottom: 0.25rem;">
+                                                    Enviar notificações via WhatsApp
+                                                </span>
+                                                <small style="color: var(--color-gray-600); font-size: 0.875rem;">
+                                                    Quando ativado, o cliente receberá mensagens automáticas sobre o status do pedido
+                                                </small>
+                                            </div>
+                                        </label>
+                                    </div>
+
+                                    <div class="notification-details" id="notificationDetails">
+                                        <h3 style="font-size: 0.875rem; font-weight: 700; color: var(--color-gray-700); margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.05em;">
+                                            Mensagens que serão enviadas:
+                                        </h3>
+                                        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                                            <div class="notification-item">
+                                                <div class="notification-icon preparing">
+                                                    🍳
+                                                </div>
+                                                <div class="notification-content">
+                                                    <strong>Preparando</strong>
+                                                    <p>Seu pedido está sendo preparado com carinho!</p>
+                                                </div>
+                                            </div>
+                                            <div class="notification-item">
+                                                <div class="notification-icon ready">
+                                                    ✅
+                                                </div>
+                                                <div class="notification-content">
+                                                    <strong>Pronto</strong>
+                                                    <p>Seu pedido está pronto e saindo para entrega!</p>
+                                                </div>
+                                            </div>
+                                            <div class="notification-item">
+                                                <div class="notification-icon delivered">
+                                                    🎉
+                                                </div>
+                                                <div class="notification-content">
+                                                    <strong>Entregue</strong>
+                                                    <p>Pedido entregue! Obrigado pela preferência!</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </section>

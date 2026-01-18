@@ -104,7 +104,8 @@ let state = {
     activeCategory: 'burgers',
     cart: [],
     orders: [],
-    isLoading: false
+    isLoading: false,
+    notificationsEnabled: loadFromLocalStorage('notificationsEnabled') !== false // Default true
 };
 
 // ================================================
@@ -731,8 +732,8 @@ function updateOrderStatus(orderId, newStatus) {
     saveToLocalStorage('orders', state.orders);
     renderAdminDashboard();
 
-    // Send WhatsApp notification to customer
-    if (order.customerPhone) {
+    // Send WhatsApp notification to customer if enabled
+    if (order.customerPhone && state.notificationsEnabled) {
         sendStatusUpdate(order, newStatus);
     }
 }
@@ -903,6 +904,35 @@ function switchConfigTab(tabName) {
     } else if (tabName === 'products') {
         renderProductsList();
         updateProductCategorySelect();
+    } else if (tabName === 'settings') {
+        loadSettingsTab();
+    }
+}
+
+// ================================================
+// SETTINGS MANAGEMENT
+// ================================================
+
+function selectEmoji(emoji) {
+    document.getElementById('categoryIcon').value = emoji;
+}
+
+function toggleNotifications() {
+    const checkbox = document.getElementById('enableNotifications');
+    state.notificationsEnabled = checkbox.checked;
+    saveToLocalStorage('notificationsEnabled', state.notificationsEnabled);
+    
+    const notificationDetails = document.getElementById('notificationDetails');
+    if (notificationDetails) {
+        notificationDetails.style.display = state.notificationsEnabled ? 'block' : 'none';
+    }
+}
+
+function loadSettingsTab() {
+    const checkbox = document.getElementById('enableNotifications');
+    if (checkbox) {
+        checkbox.checked = state.notificationsEnabled;
+        toggleNotifications(); // Update UI
     }
 }
 
