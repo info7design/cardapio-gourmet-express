@@ -539,33 +539,54 @@ function renderAdminDashboard() {
     document.getElementById('inProgressCount').textContent = inProgressCount;
     document.getElementById('totalOrdersCount').textContent = todayOrders.length;
 
-    // Render orders
-    renderOrders();
+    // Render active orders and history
+    renderActiveOrders();
+    renderOrdersHistory();
 }
 
-function renderOrders() {
+function renderActiveOrders() {
+    const activeOrdersList = document.getElementById('activeOrdersList');
+    if (!activeOrdersList) return;
+
+    // Get only active orders (not delivered)
+    const activeOrders = state.orders.filter(o => o.status !== 'delivered');
+
+    if (activeOrders.length === 0) {
+        activeOrdersList.innerHTML = `
+            <div class="empty-orders">
+                <div class="empty-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6z"/>
+                        <line x1="6" y1="17" x2="18" y2="17"/>
+                    </svg>
+                </div>
+                <p>Nenhum pedido em andamento.</p>
+            </div>
+        `;
+        return;
+    }
+
+    activeOrdersList.innerHTML = activeOrders.map(order => renderOrderCard(order, true)).join('');
+}
+
+function renderOrdersHistory() {
     const ordersList = document.getElementById('ordersList');
     if (!ordersList) return;
 
-    // Filter orders
-    let filteredOrders = [...state.orders];
-
-    // Apply status filter
-    if (currentFilter !== 'all') {
-        filteredOrders = filteredOrders.filter(o => o.status === currentFilter);
-    }
+    // Get only delivered orders
+    let historyOrders = state.orders.filter(o => o.status === 'delivered');
 
     // Apply search filter
     if (currentSearchTerm) {
         const searchLower = currentSearchTerm.toLowerCase();
-        filteredOrders = filteredOrders.filter(o => 
+        historyOrders = historyOrders.filter(o => 
             o.customerName.toLowerCase().includes(searchLower) ||
             o.id.includes(searchLower) ||
             o.customerAddress.toLowerCase().includes(searchLower)
         );
     }
 
-    if (filteredOrders.length === 0) {
+    if (historyOrders.length === 0) {
         ordersList.innerHTML = `
             <div class="empty-orders">
                 <div class="empty-icon">
@@ -574,67 +595,75 @@ function renderOrders() {
                         <line x1="6" y1="17" x2="18" y2="17"/>
                     </svg>
                 </div>
-                <p>Nenhum pedido encontrado.</p>
+                <p>Nenhum pedido no histórico.</p>
             </div>
         `;
         return;
     }
 
-    ordersList.innerHTML = filteredOrders.map(order => {
-        const actionButton = getOrderActionButton(order);
-        const orderDate = new Date(order.createdAt).toLocaleString('pt-BR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-        
-        return `
-            <div class="order-card" data-order-id="${order.id}">
-                <div class="order-header">
-                    <div class="order-header-left">
-                        <div>
-                            <p class="order-id">Pedido #${order.id.slice(-6)}</p>
-                            <h4 class="order-customer">${order.customerName}</h4>
-                            <p class="order-date">${orderDate}</p>
-                        </div>
+    ordersList.innerHTML = historyOrders.map(order => renderOrderCard(order, false)).join('');
+}
+
+function renderOrderCard(order, showActions) {
+    const actionButton = showActions ? getOrderActionButton(order) : '';
+    const orderDate = new Date(order.createdAt).toLocaleString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+    
+    return `
+        <div class="order-card" data-order-id="${order.id}">
+            <div class="order-header">
+                <div class="order-header-left">
+                    <div>
+                        <p class="order-id">Pedido #${order.id.slice(-6)}</p>
+                        <h4 class="order-customer">${order.customerName}</h4>
+                        <p class="order-date">${orderDate}</p>
                     </div>
-                    <span class="status-badge ${getStatusClass(order.status)}">
-                        ${getStatusLabel(order.status)}
-                    </span>
                 </div>
-                <div class="order-body">
-                    <div class="order-items">
-                        ${order.items.map(item => `
-                            <div class="order-item-tag">
-                                <span class="order-item-quantity">${item.quantity}x</span>
-                                <span class="order-item-name">${item.name}</span>
-                            </div>
-                        `).join('')}
-                    </div>
-                    <div class="order-info-row">
-                        <div class="order-address">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                                <circle cx="12" cy="10" r="3"/>
-                            </svg>
-                            <span>${order.customerAddress}</span>
-                        </div>
-                        <div class="order-total">
-                            <span class="order-total-label">Total:</span>
-                            <span class="order-total-value">R$ ${formatPrice(order.total)}</span>
-                        </div>
-                    </div>
-                    ${actionButton ? `
-                        <div class="order-actions">
-                            ${actionButton}
-                        </div>
-                    ` : ''}
-                </div>
+                <span class="status-badge ${getStatusClass(order.status)}">
+                    ${getStatusLabel(order.status)}
+                </span>
             </div>
-        `;
-    }).join('');
+            <div class="order-body">
+                <div class="order-items">
+                    ${order.items.map(item => `
+                        <div class="order-item-tag">
+                            <span class="order-item-quantity">${item.quantity}x</span>
+                            <span class="order-item-name">${item.name}</span>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="order-info-row">
+                    <div class="order-address">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                            <circle cx="12" cy="10" r="3"/>
+                        </svg>
+                        <span>${order.customerAddress}</span>
+                    </div>
+                    <div class="order-total">
+                        <span class="order-total-label">Total:</span>
+                        <span class="order-total-value">R$ ${formatPrice(order.total)}</span>
+                    </div>
+                </div>
+                ${actionButton ? `
+                    <div class="order-actions">
+                        ${actionButton}
+                    </div>
+                ` : ''}
+            </div>
+        </div>
+    `;
+}
+
+function renderOrders() {
+    // Maintain compatibility - now calls both renders
+    renderActiveOrders();
+    renderOrdersHistory();
 }
 
 function filterOrdersByStatus(status) {
@@ -650,13 +679,13 @@ function filterOrdersByStatus(status) {
         }
     });
 
-    renderOrders();
+    renderOrdersHistory();
 }
 
 function filterOrders() {
     const searchInput = document.getElementById('searchOrders');
     currentSearchTerm = searchInput.value;
-    renderOrders();
+    renderOrdersHistory();
 }
 
 function getOrderActionButton(order) {

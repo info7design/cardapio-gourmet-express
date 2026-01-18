@@ -220,7 +220,32 @@
                     </div>
                 </div>
 
-                <!-- Orders Section with Filters -->
+                <!-- Active Orders Section -->
+                <div class="orders-container active-orders-section">
+                    <div class="orders-header-section">
+                        <h2 class="section-title">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <polyline points="12 6 12 12 16 14"/>
+                            </svg>
+                            Pedidos em Andamento
+                        </h2>
+                    </div>
+
+                    <div class="orders-list" id="activeOrdersList">
+                        <div class="empty-orders">
+                            <div class="empty-icon">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6z"/>
+                                    <line x1="6" y1="17" x2="18" y2="17"/>
+                                </svg>
+                            </div>
+                            <p>Nenhum pedido em andamento.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- History Section with Filters -->
                 <div class="orders-container">
                     <div class="orders-header-section">
                         <h2 class="section-title">
@@ -238,25 +263,7 @@
                                     <circle cx="11" cy="11" r="8"/>
                                     <path d="m21 21-4.35-4.35"/>
                                 </svg>
-                                <input type="text" id="searchOrders" placeholder="Buscar por nome ou ID..." onkeyup="filterOrders()">
-                            </div>
-
-                            <div class="filter-buttons">
-                                <button class="filter-btn active" data-filter="all" onclick="filterOrdersByStatus('all')">
-                                    Todos
-                                </button>
-                                <button class="filter-btn" data-filter="pending" onclick="filterOrdersByStatus('pending')">
-                                    Pendentes
-                                </button>
-                                <button class="filter-btn" data-filter="preparing" onclick="filterOrdersByStatus('preparing')">
-                                    Preparando
-                                </button>
-                                <button class="filter-btn" data-filter="ready" onclick="filterOrdersByStatus('ready')">
-                                    Prontos
-                                </button>
-                                <button class="filter-btn" data-filter="delivered" onclick="filterOrdersByStatus('delivered')">
-                                    Entregues
-                                </button>
+                                <input type="text" id="searchOrders" placeholder="Buscar no histórico..." onkeyup="filterOrders()">
                             </div>
                         </div>
                     </div>
