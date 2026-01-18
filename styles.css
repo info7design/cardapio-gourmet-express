@@ -2339,11 +2339,35 @@ textarea.form-input {
    EMOJI SELECTOR
    ================================================ */
 
-.emoji-selector {
+.emoji-picker {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 0.5rem;
+    padding: 1rem;
+    background-color: white;
+    border: 2px solid var(--color-primary);
+    border-radius: 0.75rem;
+    box-shadow: var(--shadow-lg);
+    z-index: 1000;
     display: flex;
     flex-wrap: wrap;
     gap: 0.25rem;
-    max-width: 300px;
+    max-height: 300px;
+    overflow-y: auto;
+    animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .emoji-btn {
@@ -2393,6 +2417,30 @@ textarea.form-input {
     border: 1px solid var(--color-gray-200);
 }
 
+.notification-edit-item {
+    padding: 1rem;
+    background-color: white;
+    border-radius: 0.75rem;
+    border: 1px solid var(--color-gray-200);
+}
+
+.notification-edit-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.notification-edit-header strong {
+    font-weight: 700;
+    color: var(--color-gray-800);
+    font-size: 0.875rem;
+}
+
+.notification-edit-item textarea {
+    resize: vertical;
+}
+
 .notification-item {
     display: flex;
     align-items: center;
@@ -2404,13 +2452,13 @@ textarea.form-input {
 }
 
 .notification-icon {
-    width: 3rem;
-    height: 3rem;
+    width: 2.5rem;
+    height: 2.5rem;
     border-radius: 0.5rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     flex-shrink: 0;
 }
 

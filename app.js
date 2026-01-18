@@ -739,13 +739,16 @@ function updateOrderStatus(orderId, newStatus) {
 }
 
 function sendStatusUpdate(order, newStatus) {
-    const statusMessages = {
+    // Load custom messages or use defaults
+    const savedMessages = loadFromLocalStorage('notificationMessages');
+    const defaultMessages = {
         preparing: '🍳 Seu pedido está sendo preparado com carinho!',
         ready: '✅ Seu pedido está pronto e saindo para entrega!',
         delivered: '🎉 Pedido entregue! Obrigado pela preferência!'
     };
 
-    const statusMessage = statusMessages[newStatus];
+    const messages = savedMessages || defaultMessages;
+    const statusMessage = messages[newStatus];
     if (!statusMessage) return;
 
     const customerPhone = order.customerPhone.replace(/\D/g, '');
@@ -753,7 +756,7 @@ function sendStatusUpdate(order, newStatus) {
 
     const message = `*Gourmet Express*%0A%0A` +
         `Olá *${order.customerName}*!%0A%0A` +
-        `${statusMessage}%0A%0A` +
+        `${encodeURIComponent(statusMessage)}%0A%0A` +
         `*Pedido:* #${order.id.slice(-6)}%0A` +
         `*Total:* R$ ${formatPrice(order.total)}%0A%0A` +
         `_Atualização automática_`;
@@ -915,7 +918,34 @@ function switchConfigTab(tabName) {
 
 function selectEmoji(emoji) {
     document.getElementById('categoryIcon').value = emoji;
+    hideEmojiPicker();
 }
+
+function showEmojiPicker() {
+    const picker = document.getElementById('emojiPicker');
+    if (picker) {
+        picker.style.display = 'flex';
+    }
+}
+
+function hideEmojiPicker() {
+    const picker = document.getElementById('emojiPicker');
+    if (picker) {
+        picker.style.display = 'none';
+    }
+}
+
+// Fechar o emoji picker ao clicar fora dele
+document.addEventListener('click', function(event) {
+    const emojiPicker = document.getElementById('emojiPicker');
+    const categoryIcon = document.getElementById('categoryIcon');
+    
+    if (emojiPicker && categoryIcon) {
+        if (!emojiPicker.contains(event.target) && event.target !== categoryIcon) {
+            hideEmojiPicker();
+        }
+    }
+});
 
 function toggleNotifications() {
     const checkbox = document.getElementById('enableNotifications');
@@ -928,12 +958,49 @@ function toggleNotifications() {
     }
 }
 
+function saveNotificationMessages() {
+    const messages = {
+        preparing: document.getElementById('msgPreparing').value.trim(),
+        ready: document.getElementById('msgReady').value.trim(),
+        delivered: document.getElementById('msgDelivered').value.trim()
+    };
+
+    if (!messages.preparing || !messages.ready || !messages.delivered) {
+        alert('Por favor, preencha todas as mensagens.');
+        return;
+    }
+
+    saveToLocalStorage('notificationMessages', messages);
+    alert('Mensagens salvas com sucesso!');
+}
+
+function loadNotificationMessages() {
+    const savedMessages = loadFromLocalStorage('notificationMessages');
+    
+    const defaultMessages = {
+        preparing: '🍳 Seu pedido está sendo preparado com carinho!',
+        ready: '✅ Seu pedido está pronto e saindo para entrega!',
+        delivered: '🎉 Pedido entregue! Obrigado pela preferência!'
+    };
+
+    const messages = savedMessages || defaultMessages;
+
+    const msgPreparing = document.getElementById('msgPreparing');
+    const msgReady = document.getElementById('msgReady');
+    const msgDelivered = document.getElementById('msgDelivered');
+
+    if (msgPreparing) msgPreparing.value = messages.preparing;
+    if (msgReady) msgReady.value = messages.ready;
+    if (msgDelivered) msgDelivered.value = messages.delivered;
+}
+
 function loadSettingsTab() {
     const checkbox = document.getElementById('enableNotifications');
     if (checkbox) {
         checkbox.checked = state.notificationsEnabled;
         toggleNotifications(); // Update UI
     }
+    loadNotificationMessages();
 }
 
 // ================================================
