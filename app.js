@@ -78,15 +78,15 @@ const DEFAULT_PRODUCTS = [
     },
 ];
 
-// Default hours
+// Default hours (Segunda a Domingo)
 const DEFAULT_HOURS = [
-    { day: 'Domingo', open: '12:00', close: '23:00', closed: false },
-    { day: 'Segunda', open: '18:00', close: '23:00', closed: false },
-    { day: 'Terça', open: '18:00', close: '23:00', closed: false },
-    { day: 'Quarta', open: '18:00', close: '23:00', closed: false },
-    { day: 'Quinta', open: '18:00', close: '23:00', closed: false },
-    { day: 'Sexta', open: '18:00', close: '00:00', closed: false },
+    { day: 'Segunda-feira', open: '18:00', close: '23:00', closed: false },
+    { day: 'Terça-feira', open: '18:00', close: '23:00', closed: false },
+    { day: 'Quarta-feira', open: '18:00', close: '23:00', closed: false },
+    { day: 'Quinta-feira', open: '18:00', close: '23:00', closed: false },
+    { day: 'Sexta-feira', open: '18:00', close: '00:00', closed: false },
     { day: 'Sábado', open: '12:00', close: '00:00', closed: false },
+    { day: 'Domingo', open: '12:00', close: '23:00', closed: false },
 ];
 
 // Load products from localStorage or use defaults
@@ -185,7 +185,9 @@ function renderBusinessInfo() {
     if (!businessInfoContainer) return;
 
     const hours = loadFromLocalStorage('hours') || DEFAULT_HOURS;
-    const today = new Date().getDay(); // 0 = Domingo, 1 = Segunda, etc.
+    // Mapear getDay() (0=Dom, 1=Seg, ..., 6=Sáb) para o índice do array (0=Seg, ..., 6=Dom)
+    const dayOfWeek = new Date().getDay();
+    const today = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Domingo=6, Segunda=0, ..., Sábado=5
     const todayInfo = hours[today];
 
     const hoursHTML = hours.map((day, index) => {
@@ -240,7 +242,9 @@ function renderBusinessInfo() {
     if (!businessInfoContainer) return;
 
     const hours = loadFromLocalStorage('hours') || DEFAULT_HOURS;
-    const today = new Date().getDay(); // 0 = Domingo, 1 = Segunda, etc.
+    // Mapear getDay() (0=Dom, 1=Seg, ..., 6=Sáb) para o índice do array (0=Seg, ..., 6=Dom)
+    const dayOfWeek = new Date().getDay();
+    const today = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Domingo=6, Segunda=0, ..., Sábado=5
     const todayInfo = hours[today];
 
     const hoursHTML = hours.map((day, index) => {
