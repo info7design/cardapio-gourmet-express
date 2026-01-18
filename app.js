@@ -516,71 +516,89 @@ function handleCheckout() {
 // ADMIN DASHBOARD
 // ================================================
 
+let currentFilter = 'all';
+let currentSearchTerm = '';
+
 function renderAdminDashboard() {
     state.orders = loadFromLocalStorage('orders') || [];
 
-    // Update stats
-    document.getElementById('totalOrders').textContent = state.orders.length;
-    document.getElementById('deliveredOrders').textContent = 
-        state.orders.filter(o => o.status === 'delivered').length;
+    // Calculate metrics
+    const today = new Date().toLocaleDateString();
+    const todayOrders = state.orders.filter(o => {
+        const orderDate = new Date(o.createdAt).toLocaleDateString();
+        return orderDate === today;
+    });
 
-    // Render queue
-    renderQueue();
+    const todaySales = todayOrders.reduce((sum, o) => sum + o.total, 0);
+    const deliveredCount = todayOrders.filter(o => o.status === 'delivered').length;
+    const inProgressCount = todayOrders.filter(o => ['pending', 'preparing', 'ready'].includes(o.status)).length;
+
+    // Update metrics
+    document.getElementById('todaySales').textContent = `R$ ${formatPrice(todaySales)}`;
+    document.getElementById('deliveredCount').textContent = deliveredCount;
+    document.getElementById('inProgressCount').textContent = inProgressCount;
+    document.getElementById('totalOrdersCount').textContent = todayOrders.length;
 
     // Render orders
     renderOrders();
-
-    // Render hours configuration
-    renderHoursConfig();
-}
-
-function renderQueue() {
-    const queueList = document.getElementById('queueList');
-    if (!queueList) return;
-
-    const pendingOrders = state.orders.filter(o => o.status === 'pending').slice(0, 3);
-
-    if (pendingOrders.length === 0) {
-        queueList.innerHTML = '<div class="empty-queue">Nenhum pedido pendente</div>';
-        return;
-    }
-
-    queueList.innerHTML = pendingOrders.map(order => `
-        <div class="queue-item">
-            <div class="queue-indicator"></div>
-            <span class="queue-name">${order.customerName}</span>
-            <span class="queue-price">R$ ${formatPrice(order.total)}</span>
-        </div>
-    `).join('');
 }
 
 function renderOrders() {
     const ordersList = document.getElementById('ordersList');
     if (!ordersList) return;
 
-    if (state.orders.length === 0) {
+    // Filter orders
+    let filteredOrders = [...state.orders];
+
+    // Apply status filter
+    if (currentFilter !== 'all') {
+        filteredOrders = filteredOrders.filter(o => o.status === currentFilter);
+    }
+
+    // Apply search filter
+    if (currentSearchTerm) {
+        const searchLower = currentSearchTerm.toLowerCase();
+        filteredOrders = filteredOrders.filter(o => 
+            o.customerName.toLowerCase().includes(searchLower) ||
+            o.id.includes(searchLower) ||
+            o.customerAddress.toLowerCase().includes(searchLower)
+        );
+    }
+
+    if (filteredOrders.length === 0) {
         ordersList.innerHTML = `
             <div class="empty-orders">
                 <div class="empty-icon">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6z"/>
                         <line x1="6" y1="17" x2="18" y2="17"/>
                     </svg>
                 </div>
-                <p>Nenhum pedido recebido ainda.</p>
+                <p>Nenhum pedido encontrado.</p>
             </div>
         `;
         return;
     }
 
-    ordersList.innerHTML = state.orders.map(order => {
+    ordersList.innerHTML = filteredOrders.map(order => {
         const actionButton = getOrderActionButton(order);
+        const orderDate = new Date(order.createdAt).toLocaleString('pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        
         return `
-            <div class="order-card">
+            <div class="order-card" data-order-id="${order.id}">
                 <div class="order-header">
-                    <div>
-                        <p class="order-id">ID: ${order.id.slice(-6)}</p>
-                        <h4 class="order-customer">${order.customerName}</h4>
+                    <div class="order-header-left">
+                        <div>
+                            <p class="order-id">Pedido #${order.id.slice(-6)}</p>
+                            <h4 class="order-customer">${order.customerName}</h4>
+                            <p class="order-date">${orderDate}</p>
+                        </div>
                     </div>
                     <span class="status-badge ${getStatusClass(order.status)}">
                         ${getStatusLabel(order.status)}
@@ -595,9 +613,18 @@ function renderOrders() {
                             </div>
                         `).join('')}
                     </div>
-                    <div class="order-address">
-                        <p class="order-address-label">Endereço:</p>
-                        <p class="order-address-text">${order.customerAddress}</p>
+                    <div class="order-info-row">
+                        <div class="order-address">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                                <circle cx="12" cy="10" r="3"/>
+                            </svg>
+                            <span>${order.customerAddress}</span>
+                        </div>
+                        <div class="order-total">
+                            <span class="order-total-label">Total:</span>
+                            <span class="order-total-value">R$ ${formatPrice(order.total)}</span>
+                        </div>
                     </div>
                     ${actionButton ? `
                         <div class="order-actions">
@@ -608,6 +635,28 @@ function renderOrders() {
             </div>
         `;
     }).join('');
+}
+
+function filterOrdersByStatus(status) {
+    currentFilter = status;
+    
+    // Update button states
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    filterButtons.forEach(btn => {
+        if (btn.dataset.filter === status) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+
+    renderOrders();
+}
+
+function filterOrders() {
+    const searchInput = document.getElementById('searchOrders');
+    currentSearchTerm = searchInput.value;
+    renderOrders();
 }
 
 function getOrderActionButton(order) {
@@ -1151,3 +1200,5 @@ window.updatePlaceholders = updatePlaceholders;
 window.handleImageUpload = handleImageUpload;
 window.handleImageUrl = handleImageUrl;
 window.switchConfigTab = switchConfigTab;
+window.filterOrdersByStatus = filterOrdersByStatus;
+window.filterOrders = filterOrders;
