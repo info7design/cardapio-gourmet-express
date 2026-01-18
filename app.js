@@ -28,10 +28,10 @@ const APP_ID = 'cardapio-gourmet-express';
 const WHATSAPP_NUMBER = '5511972746345'; // Altere para o número desejado
 
 const DEFAULT_CATEGORIES = [
-    { id: 'burgers', name: 'Burgers Artesanais', icon: '🍔' },
-    { id: 'sides', name: 'Acompanhamentos', icon: '🍟' },
-    { id: 'drinks', name: 'Bebidas', icon: '🥤' },
-    { id: 'desserts', name: 'Sobremesas', icon: '🍰' },
+    { id: 'burgers', name: 'Burgers Artesanais', icon: '🍔', visible: true },
+    { id: 'sides', name: 'Acompanhamentos', icon: '🍟', visible: true },
+    { id: 'drinks', name: 'Bebidas', icon: '🥤', visible: true },
+    { id: 'desserts', name: 'Sobremesas', icon: '🍰', visible: true },
 ];
 
 // Load categories from localStorage or use defaults
@@ -1176,6 +1176,7 @@ function handleCategorySubmit(event) {
     const id = document.getElementById('categoryId').value;
     const name = document.getElementById('categoryName').value.trim();
     const icon = document.getElementById('categoryIcon').value.trim() || '📦';
+    const visible = document.getElementById('categoryVisible').checked;
 
     if (!name) {
         alert('Por favor, preencha o nome da categoria.');
@@ -1192,7 +1193,7 @@ function handleCategorySubmit(event) {
         // Edit existing category
         const index = CATEGORIES.findIndex(c => c.id === id);
         if (index !== -1) {
-            CATEGORIES[index] = { id, name, icon };
+            CATEGORIES[index] = { id, name, icon, visible };
         }
     } else {
         // Check if ID already exists
@@ -1201,13 +1202,14 @@ function handleCategorySubmit(event) {
             return;
         }
         // Add new category
-        CATEGORIES.push({ id: generatedId, name, icon });
+        CATEGORIES.push({ id: generatedId, name, icon, visible });
     }
 
     saveToLocalStorage('categories', CATEGORIES);
     resetCategoryForm();
     renderCategoriesList();
     updateProductCategorySelect();
+    renderCategoriesNav(); // Update menu navigation
     renderProducts(); // Update menu view
     
     alert(id ? 'Categoria atualizada com sucesso!' : 'Categoria adicionada com sucesso!');
@@ -1216,6 +1218,7 @@ function handleCategorySubmit(event) {
 function resetCategoryForm() {
     document.getElementById('categoryForm').reset();
     document.getElementById('categoryId').value = '';
+    document.getElementById('categoryVisible').checked = true;
     document.getElementById('categorySubmitBtn').innerHTML = `
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="12" y1="5" x2="12" y2="19"/>
@@ -1233,6 +1236,7 @@ function editCategory(categoryId) {
     document.getElementById('categoryId').value = category.id;
     document.getElementById('categoryName').value = category.name;
     document.getElementById('categoryIcon').value = category.icon;
+    document.getElementById('categoryVisible').checked = category.visible !== false;
     
     document.getElementById('categorySubmitBtn').innerHTML = `
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1249,6 +1253,17 @@ function editCategory(categoryId) {
 
 function cancelCategoryEdit() {
     resetCategoryForm();
+}
+
+function toggleCategoryVisibility(categoryId) {
+    const category = CATEGORIES.find(c => c.id === categoryId);
+    if (!category) return;
+
+    category.visible = !category.visible;
+    saveToLocalStorage('categories', CATEGORIES);
+    renderCategoriesList();
+    renderCategoriesNav(); // Update menu navigation
+    renderProducts(); // Update menu view
 }
 
 function deleteCategory(categoryId) {
@@ -1269,6 +1284,7 @@ function deleteCategory(categoryId) {
         saveToLocalStorage('categories', CATEGORIES);
         renderCategoriesList();
         updateProductCategorySelect();
+        renderCategoriesNav(); // Update menu navigation
         renderProducts();
         alert('Categoria excluída com sucesso!');
     }
@@ -1295,16 +1311,27 @@ function renderCategoriesList() {
 
     categoriesList.innerHTML = CATEGORIES.map(category => {
         const productsCount = PRODUCTS.filter(p => p.category === category.id).length;
+        const isVisible = category.visible !== false;
         return `
-        <div class="product-item">
+        <div class="product-item" style="${!isVisible ? 'opacity: 0.6;' : ''}">
             <div class="product-item-image">
                 <span style="font-size: 2rem;">${category.icon}</span>
             </div>
             <div class="product-item-info">
                 <h3>${category.name}</h3>
-                <p class="product-item-description">${productsCount} produto(s)</p>
+                <p class="product-item-description">
+                    ${productsCount} produto(s)
+                    <span style="margin-left: 0.5rem; padding: 0.125rem 0.5rem; border-radius: 0.25rem; font-size: 0.625rem; font-weight: 700; ${isVisible ? 'background: #d1fae5; color: #065f46;' : 'background: #fee2e2; color: #991b1b;'}">
+                        ${isVisible ? '✓ Visível' : '✕ Oculta'}
+                    </span>
+                </p>
             </div>
             <div class="product-item-actions">
+                <button class="btn-icon ${isVisible ? 'success' : 'warning'}" onclick="toggleCategoryVisibility('${category.id}')" title="${isVisible ? 'Ocultar do menu' : 'Mostrar no menu'}">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        ${isVisible ? '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>' : '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>'}
+                    </svg>
+                </button>
                 <button class="btn-icon" onclick="editCategory('${category.id}')" title="Editar">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
@@ -1335,6 +1362,37 @@ function updateProductCategorySelect() {
 // INITIALIZATION
 // ================================================
 
+function renderCategoriesNav() {
+    const categoriesNav = document.querySelector('.categories-list');
+    if (!categoriesNav) return;
+
+    // Filter only visible categories
+    const visibleCategories = CATEGORIES.filter(cat => cat.visible !== false);
+    
+    if (visibleCategories.length === 0) {
+        categoriesNav.innerHTML = `
+            <div style="text-align: center; padding: 1rem; color: var(--color-gray-400);">
+                <p>Nenhuma categoria disponível no momento.</p>
+            </div>
+        `;
+        return;
+    }
+
+    categoriesNav.innerHTML = visibleCategories.map((category, index) => `
+        <button class="category-btn ${index === 0 ? 'active' : ''}" 
+                data-category="${category.id}" 
+                onclick="setActiveCategory('${category.id}')">
+            <span class="category-icon">${category.icon}</span>
+            <span class="category-name">${category.name}</span>
+        </button>
+    `).join('');
+
+    // Set first visible category as active
+    if (visibleCategories.length > 0) {
+        state.activeCategory = visibleCategories[0].id;
+    }
+}
+
 function initializeApp() {
     console.log('🚀 Initializing app...');
     console.log('📦 Products loaded:', PRODUCTS.length);
@@ -1345,6 +1403,9 @@ function initializeApp() {
         state.cart = savedCart;
         updateCartUI();
     }
+
+    // Render categories navigation
+    renderCategoriesNav();
 
     // Render initial products
     renderProducts();

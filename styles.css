@@ -1987,6 +1987,28 @@ textarea.form-input {
     color: var(--color-red);
 }
 
+.btn-icon.success {
+    background-color: #d1fae5;
+    border-color: #10b981;
+    color: #065f46;
+}
+
+.btn-icon.success:hover {
+    background-color: #a7f3d0;
+    border-color: #059669;
+}
+
+.btn-icon.warning {
+    background-color: #fee2e2;
+    border-color: #ef4444;
+    color: #991b1b;
+}
+
+.btn-icon.warning:hover {
+    background-color: #fecaca;
+    border-color: #dc2626;
+}
+
 /* Empty State */
 .empty-state {
     text-align: center;
